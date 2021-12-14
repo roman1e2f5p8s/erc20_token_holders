@@ -21,3 +21,7 @@ the following results (note that only the first five rows are presented here):
 | 2020-08-28 | 0x3ab5c2ac327c3044776a2c229cb9c16ba9dcdbee | 124.00870068571557 |
 | 2020-08-28 | 0xf942dba4159cb61f8ad88ca4a83f5204e8f4a6bd | 42.857142857142854 |
 | 2020-08-28 | 0xc2edad668740f1aa35e4d8f227fb8e17dca888cd | 1285.7142857142858 |
+
+## Data processing
+
+...
