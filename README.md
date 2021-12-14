@@ -9,8 +9,8 @@ The extracted data is then processed in order to obtain top ERC20 token holders 
 
 To extract the data for a given ERC20 token, please visit 
 [Etherscan Token Tracker](https://etherscan.io/tokens), find your token of interest, copy its address 
-and decimals and paste it into a query file called ````extract.sql````, which can be ran on 
-Google BigQuery platform. For example, for 
+and decimals and paste it into a query file called ````extract.sql````, which can be ran on the 
+[Google BigQuery workspace](https://console.cloud.google.com/bigquery). For example, for 
 [SushiToken](https://etherscan.io/token/0x6b3595068778dd592e39a122f4f5a5cf09c90fe2), the query returns 
 the following results (note that only the first five rows are presented here):
 
