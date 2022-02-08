@@ -1,2 +1,3 @@
 data/
+venv/
 cp_from_gcs.sh

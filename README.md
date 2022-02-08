@@ -5,12 +5,49 @@ on the Ethereum blockchain. The data is publicly available on
 [Google BigQuery](https://bigquery.cloud.google.com/dataset/bigquery-public-data:crypto_ethereum).
 The extracted data is then processed in order to obtain weekly data of the top ERC20 token holders.
 
+## Implementation
+
+The coding language of this project is ````Python 3.9````. Queries are written in the ````SQL```` 
+programming language.
+
+## Getting Started
+Please follow these instructions to install all the requirements and use the scripts correctly.
+
+### Requirements and Installation
+**Make sure you have installed:**
+1. [Python 3.9](https://www.python.org/downloads/release/python-390/)
+
+**Download the code:**
+```bash
+git clone https://github.com/roman1e2f5p8s/erc20_token_holders
+```
+
+**Create a virtual environment ```venv```:**
+```bash
+python3.9 -m venv venv
+```
+
+**Activate the virtual environment:**
+- On Unix or MacOS:
+```bash
+source venv/bin/activate
+```
+- On Windows:
+```bash
+venv\Scripts\activate.bat
+```
+
+**Install the dependencies:**
+```bash
+pip3.9 install -r requirements.txt
+```
+
 ## Data extraction
 
 To extract the data for a given ERC20 token, please visit 
 [Etherscan Token Tracker](https://etherscan.io/tokens), find your token of interest, copy its address 
 and decimals and paste it into a query file called ````extract.sql````, which can be ran on the 
-[Google BigQuery workspace](https://console.cloud.google.com/bigquery). Additionally, one might want 
+[Google BigQuery workspace](https://console.cloud.google.com/bigquery). Additionally, one may want 
 to change the end date until which the token transfers need to be scanned (exclusively).
 For example, for 
 [SushiToken](https://etherscan.io/token/0x6b3595068778dd592e39a122f4f5a5cf09c90fe2), the query returns 
@@ -29,14 +66,16 @@ For instructions, please refer to ````extract2csv.sql````.
 
 ## Data processing
 
-Queried data must be thereafter processed in order to calculate weekly top token holders.
+Queried data must thereafter be processed in order to calculate weekly top token holders.
 
-### Split CSVs to weekly data saved in pickle files
+### Split CSV files to weekly data saved in pickle files
 
 Use ````split_csv.py```` to split CSV files downloaded from GCS by weekly data saved into pickle files.
-The choice of the pickle format over CSV is made to save storage space and speed up loading data.
+The choice of the pickle format over CSV is made to save storage space and speed up data loading.
 
-Example usage:
+Example usage: assuming CSV files for SushiToken (can be downloaded from 
+[Google Drive](https://drive.google.com/drive/folders/1oWilo-ss1yRWieO4BZ-RvzhyP3Yk94Vt?usp=sharing) 
+or directly extracted using the ````extract2csv.sql```` script) are stored in ````./data/SushiToken````:
 
 ```bash
 python3.9 split_csv.py --dir="data" --name="SushiToken" --verbose
