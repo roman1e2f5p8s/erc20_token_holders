@@ -67,6 +67,9 @@ Query results can also be directly exported to CSV files saved on Google Cloud S
 For instructions, please refer to 
 [extract2csv.sql](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/extract2csv.sql)
 
+The queried data in the form of CSV files for other ERC20 tokens is publicly available in 
+[this bucket on GCS](https://console.cloud.google.com/storage/browser/blockchain_historical_data).
+
 ## Data processing
 
 Queried data must thereafter be processed in order to calculate weekly top token holders.
