@@ -69,7 +69,7 @@ For instructions, please refer to ````extract2csv.sql````.
 Queried data must thereafter be processed in order to calculate weekly top token holders.
 Two Python scripts are used for data processing: ````split_csv.py```` and ````calc_top_holders.py````.
 
-### Step1: split CSV files to weekly data saved in pickle files
+### Step 1: split CSV files to weekly data saved in pickle files
 
 Use ````split_csv.py```` to split CSV files downloaded from GCS by weekly data saved into pickle files.
 The choice of the pickle format over CSV is made to save storage space and speed up data loading.
@@ -113,7 +113,7 @@ optional arguments:
   --verbose            Print detailed output to console, defaults to False
 ```
 
-### Step2: calculate weekly top token holders
+### Step 2: calculate weekly top token holders
 
 Use ````calc_top_holders.py```` to calculates top token holders from pickle files split by weeks.
 
