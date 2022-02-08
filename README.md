@@ -67,18 +67,28 @@ For instructions, please refer to ````extract2csv.sql````.
 ## Data processing
 
 Queried data must thereafter be processed in order to calculate weekly top token holders.
+Two Python scripts are used for data processing: ````split_csv.py```` and ````calc_top_holders.py````.
 
-### Split CSV files to weekly data saved in pickle files
+### Step1: split CSV files to weekly data saved in pickle files
 
 Use ````split_csv.py```` to split CSV files downloaded from GCS by weekly data saved into pickle files.
 The choice of the pickle format over CSV is made to save storage space and speed up data loading.
 
 Example usage: assuming CSV files for SushiToken (can be downloaded from 
 [Google Drive](https://drive.google.com/drive/folders/1oWilo-ss1yRWieO4BZ-RvzhyP3Yk94Vt?usp=sharing) 
-or directly extracted using the ````extract2csv.sql```` script) are stored in ````./data/SushiToken````:
+or directly extracted using the ````extract2csv.sql```` script) are stored in ````./data/SushiToken/````:
 
 ```bash
 python3.9 split_csv.py --dir="data" --name="SushiToken" --verbose
+```
+
+The script ````split_csv.py```` also outputs the start date to be used later in 
+the ````calc_top_holders.py```` script. The start date is date such that a week ahead will be the 
+first date for which top token holders 
+will be calculated. For example, for SushiToken, ````split_csv.py```` will output:
+
+```
+Use "2020-08-30" as start_date for calc_top_holders.py
 ```
 
 See help files for more details:
@@ -102,4 +112,52 @@ optional arguments:
   --end_date END_DATE  End date to consider, defaults to 2022-01-16
   --verbose            Print detailed output to console, defaults to False
 ```
-...
+
+### Step2: calculate weekly top token holders
+
+Use ````calc_top_holders.py```` to calculates top token holders from pickle files split by weeks.
+
+Example usage: assuming pickle files for SushiToken are stored in ````./data/SushiToken/````, and the 
+start date (returned by ````split_csv.py````) is ````2020-08-30````:
+
+```bash
+python3.9 calc_top_holders.py --dir="data" --name="SushiToken" --start_date="2020-08-30" --verbose
+```
+
+This will generate a CSV file (saved in ````./data/SushiToken/````) with weekly top 10000 token holders.
+For example, top five token holders for the first three dates are given in the table below:
+
+
+| 2020-09-06       | 2020-09-13       | 2020-09-20       |
+|------------------|------------------|------------------|
+| 18072441.3513119 | 27532694.6284704 | 23938749.5570045 |
+| 13043658.1154027 | 20915794.7423454 | 21790196.6130313 |
+| 8373307.01764695 | 17856981.1038341 | 19176827.2701975 |
+| 4054865.94452714 | 15678351.5597793 | 14086290.9598478 |
+| 2879805.90997324 | 5008829.76889882 | 11038584.1500118 |
+
+
+See help files for more details:
+
+```bash
+python3.9 calc_top_holders.py --help
+```
+
+```
+usage: calc_top_holders.py --dir DIR --name NAME --start_date START_DATE [-h] [--top TOP]
+                           [--rm] [--end_date END_DATE] [--verbose]
+
+Calculates top token holders from pickle files splitted by weeks
+
+required arguments:
+  --dir DIR                Path to parent directory with ERC20 tokens data
+  --name NAME              Name of ERC20 token (also the name of the folder with pickle files)
+  --start_date START_DATE  Start date to consider (this date is printed by split_csv.py)
+
+optional arguments:
+  -h, --help               show this help message and exit
+  --top TOP                How many top holders to consider, defaults to 10000
+  --rm                     Remove pickle files after calculating, defaults to False
+  --end_date END_DATE      End date to consider, defaults to 2022-01-16
+  --verbose                Print detailed output to console, defaults to False
+```

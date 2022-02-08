@@ -17,7 +17,7 @@ from collections import defaultdict
 def main():
     formatter = lambda prog: argparse.RawTextHelpFormatter(prog, max_help_position=50)
     parser = argparse.ArgumentParser(
-            description='Calculates top token holders from pickle files splitted by weeks',
+            description='Calculates top token holders from pickle files split by weeks',
             add_help=False,
             formatter_class=formatter,
             )
