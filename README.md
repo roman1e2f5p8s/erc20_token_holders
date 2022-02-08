@@ -46,7 +46,9 @@ pip3.9 install -r requirements.txt
 
 To extract the data for a given ERC20 token, please visit 
 [Etherscan Token Tracker](https://etherscan.io/tokens), find your token of interest, copy its address 
-and decimals and paste it into a query file called ````extract.sql````, which can be ran on the 
+and decimals and paste it into a query file called 
+[extract.sql](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/extract.sql), 
+which can be ran on the 
 [Google BigQuery workspace](https://console.cloud.google.com/bigquery). Additionally, one may want 
 to change the end date until which the token transfers need to be scanned (exclusively).
 For example, for 
@@ -62,16 +64,20 @@ the following results (note that only the first five rows are presented here):
 | 2020-08-28 | 0xce84867c3c02b05dc570d0135103d3fb9cc19433 | 100.77547966308072 |
 
 Query results can also be directly exported to CSV files saved on Google Cloud Storage (GCS). 
-For instructions, please refer to ````extract2csv.sql````.
+For instructions, please refer to 
+[extract2csv.sql](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/extract2csv.sql)
 
 ## Data processing
 
 Queried data must thereafter be processed in order to calculate weekly top token holders.
-Two Python scripts are used for data processing: ````split_csv.py```` and ````calc_top_holders.py````.
+Two Python scripts are used for data processing: 
+[split_csv.py](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/split_csv.py) and 
+[calc_top_holders.py](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/calc_top_holders.py).
 
 ### Step 1: split CSV files to weekly data saved in pickle files
 
-Use ````split_csv.py```` to split CSV files downloaded from GCS by weekly data saved into pickle files.
+Use [split_csv.py](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/split_csv.py) 
+to split CSV files downloaded from GCS by weekly data saved into pickle files.
 The choice of the pickle format over CSV is made to save storage space and speed up data loading.
 
 Example usage: assuming CSV files for SushiToken (can be downloaded from 
@@ -82,10 +88,13 @@ or directly extracted using the ````extract2csv.sql```` script) are stored in ``
 python3.9 split_csv.py --dir="data" --name="SushiToken" --verbose
 ```
 
-The script ````split_csv.py```` also outputs the start date to be used later in 
-the ````calc_top_holders.py```` script. The start date is date such that a week ahead will be the 
+The script [split_csv.py](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/split_csv.py) 
+also outputs the start date to be used later in the 
+[calc_top_holders.py](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/calc_top_holders.py) script. The start date is date such that a week ahead will be the 
 first date for which top token holders 
-will be calculated. For example, for SushiToken, ````split_csv.py```` will output:
+will be calculated. For example, for SushiToken, 
+[split_csv.py](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/split_csv.py) 
+will output:
 
 ```
 Use "2020-08-30" as start_date for calc_top_holders.py
@@ -115,10 +124,11 @@ optional arguments:
 
 ### Step 2: calculate weekly top token holders
 
-Use ````calc_top_holders.py```` to calculates top token holders from pickle files split by weeks.
+Use 
+[calc_top_holders.py](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/calc_top_holders.py) to calculates top token holders from pickle files split by weeks.
 
 Example usage: assuming pickle files for SushiToken are stored in ````./data/SushiToken/````, and the 
-start date (returned by ````split_csv.py````) is ````2020-08-30````:
+start date (returned by [split_csv.py](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/split_csv.py)) is ````2020-08-30````:
 
 ```bash
 python3.9 calc_top_holders.py --dir="data" --name="SushiToken" --start_date="2020-08-30" --verbose
