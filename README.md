@@ -85,7 +85,9 @@ The choice of the pickle format over CSV is made to save storage space and speed
 
 Example usage: assuming CSV files for SushiToken (can be downloaded from 
 [Google Drive](https://drive.google.com/drive/folders/1oWilo-ss1yRWieO4BZ-RvzhyP3Yk94Vt?usp=sharing) 
-or directly extracted using the ````extract2csv.sql```` script) are stored in ````./data/SushiToken/````:
+or directly extracted using the 
+[extract2csv.sql](https://github.com/roman1e2f5p8s/erc20_token_holders/blob/main/extract2csv.sql) 
+script) are stored in ````./data/SushiToken/````:
 
 ```bash
 python3.9 split_csv.py --dir="data" --name="SushiToken" --verbose
