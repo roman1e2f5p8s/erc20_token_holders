@@ -120,6 +120,7 @@ def main():
         main_df = pd.concat([main_df, df], axis=1)
         date += DELTA
 
+    print(' ' * 50, end='\r')
     print('Calculating done! Saving data...')
     assert main_df.shape[1] == N_FILES
     fname = os.path.join(DIR, 'top{}_token_holders.csv'.format(args.top))

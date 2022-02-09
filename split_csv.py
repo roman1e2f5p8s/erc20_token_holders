@@ -125,6 +125,7 @@ def main():
     pkl_rows_counter += to_save_df.shape[0]
     assert pkl_rows_counter == csv_rows_counter
     
+    print(' ' * 50, end='\r')
     print('Converting done!')
     print('Elapsed time: {:.4f} s'.format(time() - start))
 
