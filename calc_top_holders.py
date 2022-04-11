@@ -75,6 +75,12 @@ def main():
             default=False,
             help='Print detailed output to console, defaults to False'
             )
+    optional_args.add_argument(
+            '--keep_address',
+            action='store_true',
+            default=False,
+            help='Keep address along with its values, defaults to False'
+            )
     args = parser.parse_args()
     
     DIR = os.path.join(args.dir, args.name)
@@ -111,19 +117,33 @@ def main():
         for address, value in z1:
             tokens[address] += value
 
-        sorted_d = [t for t in tokens.values() if t]
-        sorted_d.sort(reverse=True)
-        sorted_d_len = len(sorted_d)
+
+        if args.keep_address:
+            tokens = defaultdict(float, {k: v for k, v in sorted(tokens.items(), reverse=True, 
+                key=lambda item: item[1]) if v})
+            sorted_d_len = len(tokens)
+        else:
+            sorted_d = [t for t in tokens.values() if t]
+            sorted_d.sort(reverse=True)
+            sorted_d_len = len(sorted_d)
+
         cut = args.top if sorted_d_len >= args.top else sorted_d_len
-    
-        df = pd.DataFrame({date.strftime('%Y-%m-%d'): sorted_d[:cut]})
+        
+        if not args.keep_address:
+            df = pd.DataFrame({date.strftime('%Y-%m-%d'): sorted_d[:cut]})
+        else:
+            df = pd.DataFrame({date.strftime('%Y-%m-%d'): list(tokens.keys())[:cut]})
+            df = pd.concat([df, pd.DataFrame({'': list(tokens.values())[:cut]})], axis=1)
         main_df = pd.concat([main_df, df], axis=1)
+        # print(main_df)
+        # exit()
         date += DELTA
 
     print(' ' * 50, end='\r')
     print('Calculating done! Saving data...')
-    assert main_df.shape[1] == N_FILES
-    fname = os.path.join(DIR, 'top{}_token_holders.csv'.format(args.top))
+    assert main_df.shape[1] == N_FILES if not args.keep_address else N_FILES / 2
+    fname = os.path.join(DIR, 'top{}_token_holders'.format(args.top) + \
+            '_addresses' * args.keep_address + '.csv')
     main_df.to_csv(fname)
     print('Elapsed time: {:.4f} s'.format(time() - start))
     print('Data saved in {}'.format(fname))
