@@ -85,11 +85,18 @@ def main():
     
     DIR = os.path.join(args.dir, args.name)
     if not os.path.isdir(DIR):
-        raise FileNotFoundError('Directory \"{}\" does not exist!'.format(DIR))
+        raise FileNotFoundError('Directory \"{}\" does not exist! Please download data from GCS'.\
+                format(DIR))
     
-    PKL_FILES = [f for f in os.listdir(DIR) if f[-3:] == 'pkl']
+    PKL_DIR = os.path.join(DIR, 'pkl')
+    if not os.path.isdir(PKL_DIR):
+        raise FileNotFoundError('Directory \"{}\" does not exist! Please split CSV files'.\
+                format(PKL_DIR))
+    
+    PKL_FILES = os.listdir(PKL_DIR)
     if not PKL_FILES:
-        raise FileNotFoundError('Directory \"{}\" contains no pickle files!'.format(DIR))
+        raise FileNotFoundError('Directory \"{}\" contains no pickle files! Please split CSV files'.\
+                format(PKL_DIR))
     PKL_FILES = list(sorted(PKL_FILES))
     N_FILES = len(PKL_FILES)
     
@@ -100,13 +107,13 @@ def main():
     tokens = defaultdict(float)
     main_df = pd.DataFrame()
 
-    print('Calculating top token holders...')
+    print('Calculating top token holders for \"{}\"...'.format(args.name))
     start = time()
     for i, file_ in enumerate(PKL_FILES):
         if args.verbose:
             print(' file {} out of {}'.format(i, N_FILES - 1), end='\r')
 
-        fname = os.path.join(DIR, file_)
+        fname = os.path.join(PKL_DIR, file_)
         f = open(fname, 'rb')
         gc.disable()
         df = pickle.load(f)

@@ -35,6 +35,12 @@ def main():
             required=True,
             help='Name of ERC20 token (also the name of the folder with CSV files)',
             )
+    required_args.add_argument(
+            '--end_date',
+            type=str,
+            required=True,
+            help='End date to consider in format YYYY-MM-DD (exclusively)'
+            )
     
     # optimal arguments
     optional_args = parser.add_argument_group('optional arguments')
@@ -51,12 +57,6 @@ def main():
             help='Remove CSV files after converting, defaults to False'
             )
     optional_args.add_argument(
-            '--end_date',
-            type=str,
-            default='2022-01-16',
-            help='End date to consider, defaults to 2022-01-16'
-            )
-    optional_args.add_argument(
             '--verbose',
             action='store_true',
             default=False,
@@ -66,15 +66,25 @@ def main():
     
     DIR = os.path.join(args.dir, args.name)
     if not os.path.isdir(DIR):
-        raise FileNotFoundError('Directory \"{}\" does not exist!'.format(DIR))
+        raise FileNotFoundError('Directory \"{}\" does not exist! Please download data from GCS'.\
+                format(DIR))
+
+    CSV_DIR = os.path.join(DIR, 'csv')
+    if not os.path.isdir(CSV_DIR):
+        raise FileNotFoundError('Directory \"{}\" does not exist! Please download data from GCS'.\
+                format(CSV_DIR))
     
-    CSV_FILES = [f for f in os.listdir(DIR) if f[-3:] == 'csv']
+    PKL_DIR = os.path.join(DIR, 'pkl')
+    if not os.path.isdir(PKL_DIR):
+        os.makedirs(PKL_DIR)
+
+    CSV_FILES = os.listdir(CSV_DIR)
     if not CSV_FILES:
-        raise FileNotFoundError('Directory \"{}\" contains no CSV files!'.format(DIR))
+        raise FileNotFoundError('Directory \"{}\" contains no CSV files!'.format(CSV_DIR))
     CSV_FILES = list(sorted(CSV_FILES))
     N_FILES = len(CSV_FILES)
     
-    df = pd.read_csv(os.path.join(DIR, CSV_FILES[0]), nrows=1, parse_dates=['block_date'])
+    df = pd.read_csv(os.path.join(CSV_DIR, CSV_FILES[0]), nrows=1, parse_dates=['block_date'])
     first_date = df['block_date'].iloc[0]
     del df
     
@@ -95,13 +105,13 @@ def main():
     week_counter = 0
     to_save_df = pd.DataFrame()
     
-    print('Converting data in \"{}\"...'.format(DIR))
+    print('Converting data for \"{}\"...'.format(args.name))
     start = time()
     for i, file_ in enumerate(CSV_FILES):
         if args.verbose:
             print(' file {} out of {}'.format(i, N_FILES - 1), end='\r')
     
-        fname = os.path.join(DIR, file_)
+        fname = os.path.join(CSV_DIR, file_)
         df = pd.read_csv(fname, dtype={'value': float}, parse_dates=['block_date'])
         csv_rows_counter += df.shape[0]
         
@@ -109,7 +119,7 @@ def main():
         remain_df = df[df['block_date'] > date]
     
         while not remain_df.empty:
-            to_save_df.to_pickle(os.path.join(DIR, '{:04d}.pkl'.format(week_counter)))
+            to_save_df.to_pickle(os.path.join(PKL_DIR, '{:04d}.pkl'.format(week_counter)))
             pkl_rows_counter += to_save_df.shape[0]
             week_counter += 1
             date += DELTA
@@ -121,7 +131,7 @@ def main():
         if args.rm:
             os.remove(fname)
     
-    to_save_df.to_pickle(os.path.join(DIR, '{:04d}.pkl'.format(week_counter)))
+    to_save_df.to_pickle(os.path.join(PKL_DIR, '{:04d}.pkl'.format(week_counter)))
     pkl_rows_counter += to_save_df.shape[0]
     assert pkl_rows_counter == csv_rows_counter
     
