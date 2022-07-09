@@ -47,33 +47,33 @@ def main():
     args = parser.parse_args()
 
     cmd = 'gsutil -m cp -n -r \"gs://blockchain_historical_data/erc20_tokens/{}/*\" \"{}\"'.format(
-            args.name, os.path.join(args.to_dir, args.name))
+            args.name, os.path.join(args.to_dir, args.name, 'csv'))
     os.system(cmd)
 
-    if os.path.isdir(os.path.join(args.to_dir, args.name, 'new')):
-        last_csv = list(sorted([f for f in os.listdir(os.path.join(args.to_dir, args.name)) \
+    if os.path.isdir(os.path.join(args.to_dir, args.name, 'csv', 'new')):
+        last_csv = list(sorted([f for f in os.listdir(os.path.join(args.to_dir, args.name, 'csv')) \
                 if 'csv' in f and f.split('.')[0].isnumeric()]))[-1].split('.')[0]
         num_zeros = len(last_csv)
         last_csv_num = int(last_csv)
 
-        for i, csv in enumerate(sorted(os.listdir(os.path.join(args.to_dir, args.name, 'new')))):
+        for i, csv in enumerate(sorted(os.listdir(os.path.join(args.to_dir, args.name, 'csv', 'new')))):
             print(csv, str(int(last_csv) + i + 1).zfill(num_zeros) + '.csv')
-            old = os.path.join(args.to_dir, args.name, 'new', csv)
-            new = os.path.join(args.to_dir, args.name, 'new', 
+            old = os.path.join(args.to_dir, args.name, 'csv', 'new', csv)
+            new = os.path.join(args.to_dir, args.name, 'csv', 'new', 
                     str(int(last_csv) + i + 1).zfill(num_zeros) + '.csv')
             os.rename(old, new)
 
         cmd = 'gsutil -m cp -n -r \"{}\" \"gs://blockchain_historical_data/erc20_tokens/{}\"'.format(
-                os.path.join(args.to_dir, args.name, 'new', '*'), args.name)
+                os.path.join(args.to_dir, args.name, 'csv', 'new', '*'), args.name)
         os.system(cmd)
 
         shutil.copytree(
-                os.path.join(args.to_dir, args.name, 'new'),
-                os.path.join(args.to_dir, args.name),
+                os.path.join(args.to_dir, args.name, 'csv', 'new'),
+                os.path.join(args.to_dir, args.name, 'csv'),
                 copy_function=shutil.move,
                 dirs_exist_ok=True,
                 )
-        shutil.rmtree(os.path.join(args.to_dir, args.name, 'new'))
+        shutil.rmtree(os.path.join(args.to_dir, args.name, 'csv', 'new'))
         
         cmd = 'gsutil -m rm -r \"gs://blockchain_historical_data/erc20_tokens/{}/new\"'.format(
                 args.name)
