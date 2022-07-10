@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.9
+
 # This script can be used to split CSV files downloaded from GCS by weekly data saved into pickle files.
 # The resulting pickle files can then be processed by script calc_top_holders.py
 #

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.9
+
 # This script can bee used to calcualted top ERC20 token holders from weekly pickle files.
 #
 # Author:  Roman Overko
@@ -152,6 +154,8 @@ def main():
     fname = os.path.join(DIR, 'top{}_token_holders'.format(args.top) + \
             '_addresses' * args.keep_address + '.csv')
     main_df.to_csv(fname)
+    if args.verbose:
+        print(main_df.iloc[:20, :])
     print('Elapsed time: {:.4f} s'.format(time() - start))
     print('Data saved in {}'.format(fname))
 

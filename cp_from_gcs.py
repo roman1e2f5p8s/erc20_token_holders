@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.9
+
 import os
 import shutil
 import argparse
@@ -46,6 +48,8 @@ def main():
             )
     args = parser.parse_args()
 
+    if not os.path.isdir(os.path.join(args.to_dir, args.name, 'csv')):
+        os.makedirs(os.path.join(os.path.join(args.to_dir, args.name, 'csv')))
     cmd = 'gsutil -m cp -n -r \"gs://blockchain_historical_data/erc20_tokens/{}/*\" \"{}\"'.format(
             args.name, os.path.join(args.to_dir, args.name, 'csv'))
     os.system(cmd)
